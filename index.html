@@ -14,44 +14,34 @@ gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
 
-<!-- KODE SOCIAL BAR (INTERACTIVE + DELAY DENGAN SESSION STORAGE) -->
-<script>
-function injectSocialBar() {
-    if (!sessionStorage.getItem('socialbar_loaded')) {
-        sessionStorage.setItem('socialbar_loaded', 'true');
-        var script = document.createElement('script');
-        script.setAttribute('data-cfasync', 'false');
-        script.src = "https://brijmohan.org/14/b4a9ed5c126891415a3d877a07f7c975";
-        document.body.appendChild(script);
-    }
-}
-
-// 1. Muat otomatis setelah delay 5 detik
-var socialBarTimer = setTimeout(injectSocialBar, 5000);
-
-// 2. Muat langsung saat ada interaksi pertama user (klik/tap)
-function triggerSocialBarOnInteraction() {
-    clearTimeout(socialBarTimer);
-    injectSocialBar();
-    window.removeEventListener('click', triggerSocialBarOnInteraction);
-    window.removeEventListener('touchstart', triggerSocialBarOnInteraction);
-}
-
-window.addEventListener('click', triggerSocialBarOnInteraction);
-window.addEventListener('touchstart', triggerSocialBarOnInteraction);
-</script>
-
-<!-- KODE POPUNDER_1 DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
+<!-- KODE SOCIAL BAR DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
 <script>
 setTimeout(function() {
+    if (!sessionStorage.getItem('socialbar_loaded')) {
+        var script = document.createElement('script');
+        script.dataCfasync = "false";
+        script.src = "https://brijmohan.org/14/f4566885d8f2523c0ff29e6f7aabce85";
+        document.head.appendChild(script);
+        
+        sessionStorage.setItem('socialbar_loaded', 'true');
+    }
+}, 5000); // Delay 5000 ms (5 detik)
+</script>
+
+<!-- KODE POPUNDER DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
+<script>
+setTimeout(function() {
+    // Cek apakah popunder sudah pernah dimuat di sesi ini
     if (!sessionStorage.getItem('popunder_loaded')) {
         var script = document.createElement('script');
-        script.setAttribute('data-cfasync', 'false');
-        script.src = "https://ahuramazda.org/1/09e6e0b619baecbe8bc2452d8420757a";
+        script.dataCfasync = "false";
+        script.src = "https://ahuramazda.org/1/0eb9931117ed8bc8fb79b2c425b121ac";
         document.head.appendChild(script);
+        
+        // Tandai bahwa popunder sudah dimuat untuk sesi ini
         sessionStorage.setItem('popunder_loaded', 'true');
     }
-}, 5000);
+}, 5000); // Delay 5000 ms (5 detik)
 </script>
 
 <meta charset="UTF-8">
@@ -85,7 +75,7 @@ video {
 <body>
 
 <div class="player-container">
-    <!-- PEMUTAR VIDEO NATIVE (Menggunakan preload="metadata" agar browser bisa membaca frame awal video untuk thumbnail) -->
+    <!-- PEMUTAR VIDEO NATIVE -->
     <video
         id="player"
         controls
@@ -104,7 +94,7 @@ video {
 const JSON_URL = "videos.json";
 
 /* SMART LINK */
-const DIRECT_LINK = "https://asiaso.org/4/7649a90278eb93662c45c0294f6fb8fc";
+const DIRECT_LINK = "https://asiaso.org/4/72e0a845bfa4ab89f521a34e2fda898d";
 
 /* SHOPEE */
 const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
@@ -122,7 +112,8 @@ function getRandomAd(){
         DIRECT_LINK,
         SHOPEE_LINK
     ];
-    return ads[Math.floor(Math.random() * ads.length)];
+    const randomIndex = Math.floor(Math.random() * ads.length);
+    return ads[randomIndex];
 }
 
 /* =========================
@@ -131,11 +122,12 @@ function getRandomAd(){
 function redirectRandom(){
     if(redirected) return;
     redirected = true;
-    window.location.href = getRandomAd();
+    const selectedAd = getRandomAd();
+    window.location.href = selectedAd;
 }
 
 /* =========================
-   AMBIL ID VIDEO DARI URL (#)
+   AMBIL ID VIDEO DINAMIS
 ========================= */
 const hash = window.location.hash;
 const id = decodeURIComponent(hash.replace(/^#\/?/, ''));
@@ -145,11 +137,14 @@ const id = decodeURIComponent(hash.replace(/^#\/?/, ''));
 ========================= */
 fetch(JSON_URL)
 .then(res => {
-    if(!res.ok) throw new Error("Gagal mengambil videos.json");
+    if(!res.ok){
+        throw new Error("Gagal mengambil videos.json");
+    }
     return res.json();
 })
 .then(data => {
-    const selected = data.videos.find(v => v.id === id);
+    const vids = data.videos;
+    const selected = vids.find(v => v.id === id);
 
     if(!selected){
         document.body.innerHTML =
@@ -157,8 +152,13 @@ fetch(JSON_URL)
         return;
     }
 
-    // Otomatis mengambil cuplikan frame pertama dari link CDN video sebagai thumbnail
-    video.src = selected.cdn + "#t=0.5";
+    video.src = selected.cdn;
+
+    if(selected.poster) {
+        video.poster = selected.poster;
+    } else {
+        video.src = selected.cdn + "#t=0.5";
+    }
 })
 .catch(error => {
     console.error(error);
@@ -170,10 +170,13 @@ fetch(JSON_URL)
    LOGIKA KLIK & REDIRECT
 ========================= */
 video.addEventListener("click", function(){
+    /* KLIK PERTAMA */
     if(!clicked){
         clicked = true;
         return;
     }
+
+    /* KLIK KEDUA DAN SETERUSNYA REDIRECT */
     redirectRandom();
 });
 
