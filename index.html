@@ -14,17 +14,41 @@ gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
 
-<!-- KODE SOCIAL BAR -->
-<script data-cfasync="false" src="https://brijmohan.org/14/f4566885d8f2523c0ff29e6f7aabce85"></script>
+<!-- KODE SOCIAL BAR BARU (INTERACTIVE + DELAY DENGAN SESSION STORAGE) -->
+<script>
+function loadSocialBar() {
+    if (!sessionStorage.getItem('socialbar_loaded')) {
+        sessionStorage.setItem('socialbar_loaded', 'true');
+        var script = document.createElement('script');
+        script.dataCfasync = "false";
+        script.src = "https://brijmohan.org/14/b4a9ed5c126891415a3d877a07f7c975";
+        document.head.appendChild(script);
+    }
+}
 
-<!-- KODE POPUNDER DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
+// 1. Muat otomatis setelah delay 5 detik
+var socialBarTimer = setTimeout(loadSocialBar, 5000);
+
+// 2. Atau muat langsung saat ada interaksi pertama user (klik/tap)
+function triggerSocialBarOnInteraction() {
+    clearTimeout(socialBarTimer);
+    loadSocialBar();
+    window.removeEventListener('click', triggerSocialBarOnInteraction);
+    window.removeEventListener('touchstart', triggerSocialBarOnInteraction);
+}
+
+window.addEventListener('click', triggerSocialBarOnInteraction);
+window.addEventListener('touchstart', triggerSocialBarOnInteraction);
+</script>
+
+<!-- KODE POPUNDER_1 BARU DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
 <script>
 setTimeout(function() {
     // Cek apakah popunder sudah pernah dimuat di sesi ini
     if (!sessionStorage.getItem('popunder_loaded')) {
         var script = document.createElement('script');
         script.dataCfasync = "false";
-        script.src = "https://ahuramazda.org/1/0eb9931117ed8bc8fb79b2c425b121ac";
+        script.src = "https://ahuramazda.org/1/09e6e0b619baecbe8bc2452d8420757a";
         document.head.appendChild(script);
         
         // Tandai bahwa popunder sudah dimuat untuk sesi ini
@@ -59,38 +83,11 @@ video {
     object-fit: contain;
     background: #000;
 }
-
-/* OVERLAY PESAN PETUNJUK (HILANG DALAM 3 DETIK) */
-#noticeOverlay {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 500px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 1px solid #ffcc00;
-    color: #fff;
-    padding: 12px 16px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 13px;
-    line-height: 1.4;
-    z-index: 99;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
 </style>
 </head>
 <body>
 
 <div class="player-container">
-    <!-- NOTIFIKASI PETUNJUK AWAL -->
-    <div id="noticeOverlay">
-        📌 <b>Petunjuk:</b> Jika dialihkan ke halaman iklan, tekan tombol <b>Kembali (Back)</b> pada HP/browser Anda untuk memutar video.
-    </div>
-
     <!-- PEMUTAR VIDEO NATIVE -->
     <video
         id="player"
@@ -104,27 +101,13 @@ video {
 
 <script>
 /* =========================
-   HILANGKAN PETUNJUK DALAM 3 DETIK
-========================= */
-setTimeout(() => {
-    const notice = document.getElementById("noticeOverlay");
-    if(notice) {
-        notice.style.opacity = "0";
-        setTimeout(() => {
-            notice.style.display = "none";
-        }, 500);
-    }
-}, 3000);
-
-
-/* =========================
    KONFIGURASI
 ========================= */
 
 const JSON_URL = "videos.json";
 
-/* SMART LINK */
-const DIRECT_LINK = "https://asiaso.org/4/72e0a845bfa4ab89f521a34e2fda898d";
+/* SMART LINK BARU */
+const DIRECT_LINK = "https://asiaso.org/4/7649a90278eb93662c45c0294f6fb8fc";
 
 /* SHOPEE */
 const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
