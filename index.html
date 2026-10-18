@@ -85,12 +85,12 @@ video {
 <body>
 
 <div class="player-container">
-    <!-- PEMUTAR VIDEO NATIVE (Diubah ke preload="none" agar lebih ringan) -->
+    <!-- PEMUTAR VIDEO NATIVE (Menggunakan preload="metadata" agar browser bisa membaca frame awal video untuk thumbnail) -->
     <video
         id="player"
         controls
         playsinline
-        preload="none"
+        preload="metadata"
         controlsList="nodownload">
         <source src="" type="video/mp4">
     </video>
@@ -135,13 +135,13 @@ function redirectRandom(){
 }
 
 /* =========================
-   AMBIL ID VIDEO DARI URL (Menggunakan # seperti semula agar lebih ringan & kompatibel)
+   AMBIL ID VIDEO DARI URL (#)
 ========================= */
 const hash = window.location.hash;
 const id = decodeURIComponent(hash.replace(/^#\/?/, ''));
 
 /* =========================
-   LOAD VIDEOS.JSON (Asinkron & Efisien)
+   LOAD VIDEOS.JSON
 ========================= */
 fetch(JSON_URL)
 .then(res => {
@@ -157,11 +157,8 @@ fetch(JSON_URL)
         return;
     }
 
-    video.src = selected.cdn;
-
-    if(selected.poster) {
-        video.poster = selected.poster;
-    }
+    // Otomatis mengambil cuplikan frame pertama dari link CDN video sebagai thumbnail
+    video.src = selected.cdn + "#t=0.5";
 })
 .catch(error => {
     console.error(error);
