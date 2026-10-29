@@ -50,7 +50,7 @@
     },
     {
       "id": "ZYSxxT091.mp4",
-      "cdn": "https://cdn2.slicedrive.com/ZYSxxT091.mp4"
+      "cdn": "https://cxn2.slicedrive.com/ZYSxxT091.mp4"
     },
     {
       "id": "Uv04rCPM1.mp4",
@@ -239,6 +239,11 @@
     {
       "id": "WyaVW2Lt1.mp4",
       "cdn": "https://cdn2.slicedrive.com/WyaVW2Lt1.mp4"
+    },
+    {
+      "id": "Hw8gu2l",
+      "type": "redirect",
+      "target": "https://s.shopee.co.id/6L5baZMKrV"
     }
   ]
 }
