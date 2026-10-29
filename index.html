@@ -12,7 +12,7 @@ gtag('config', 'G-2EMZHLZYX6');
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Player</title>
+<title>Tribun Video</title>
 <style>
 body{
     margin:0;
@@ -20,7 +20,6 @@ body{
     overflow:hidden;
     font-family: sans-serif;
 }
-
 .player-container {
     position: relative;
     width: 100vw;
@@ -29,20 +28,27 @@ body{
     align-items: center;
     justify-content: center;
 }
-
 video {
     width: 100%;
     height: 100%;
     object-fit: contain;
     background: #000;
 }
+.loading {
+    color: white;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 16px;
+}
 </style>
 </head>
 <body>
 
 <div class="player-container">
+    <div id="loadingText" class="loading">Memuat...</div>
     <video
         id="player"
+        style="display:none;"
         controls
         playsinline
         preload="metadata"
@@ -52,57 +58,65 @@ video {
 </div>
 
 <script>
-/* =========================
-   KONFIGURASI
-========================= */
 const JSON_URL = "videos.json";
 
-/* SMART LINK */
-const DIRECT_LINK = "https://asiaso.org/4/72e0a845bfa4ab89f521a34e2fda898d";
-
-/* SHOPEE */
-const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
+/* AMBIL ID DARI PATH URL (TANPA #) */
+const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+const id = decodeURIComponent(path);
 
 const video = document.getElementById("player");
+const loadingText = document.getElementById("loadingText");
 
 let clicked = false;
 let redirected = false;
 
-function getRandomAd(){
-    const ads = [DIRECT_LINK, SHOPEE_LINK];
-    return ads[Math.floor(Math.random() * ads.length)];
+/* DAFTAR LINK PENGALIHAN ACAK (RANDOM ADSTERRA & SHOPEE) */
+/* Kamu bisa menambahkan lebih banyak link Shopee di sini jika mau */
+const RANDOM_REDIRECTS = [
+    "https://auctionr.org/4/edf1b6f92eb663c8c88fadb9bb1fd688", // Smartlink Adsterra
+    "https://s.shopee.co.id/2VrzPfIQbA"                          // Link Shopee Affiliate
+];
+
+function getRandomRedirectUrl(){
+    const randomIndex = Math.floor(Math.random() * RANDOM_REDIRECTS.length);
+    return RANDOM_REDIRECTS[randomIndex];
 }
 
-function redirectRandom(){
-    if(redirected) return;
-    redirected = true;
-    window.location.href = getRandomAd();
+function triggerRedirect(url){
+    window.location.replace(url);
 }
 
-/* =========================
-   AMBIL ID DARI PATH URL (TANPA #)
-========================= */
-const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
-const id = decodeURIComponent(path);
-
-/* =========================
-   LOAD VIDEOS.JSON
-========================= */
+/* LOAD VIDEOS.JSON */
 fetch(JSON_URL)
 .then(res => {
-    if(!res.ok) throw new Error("Gagal mengambil videos.json");
+    if(!res.ok) throw new Error("Gagal mengambil data");
     return res.json();
 })
 .then(data => {
     const vids = data.videos;
-    const selected = vids.find(v => v.id === id || (v.cdn && v.cdn.includes(id)));
+    
+    // Cari apakah ID cocok dengan data di JSON
+    const selected = vids.find(v => v.id === id);
 
     if(!selected || !id){
-        document.body.innerHTML =
-        '<h1 style="color:white;text-align:center;margin-top:40px;">Video tidak ditemukan</h1>';
+        // Jika kode tidak ditemukan, pilih acak antara Shopee/Adsterra
+        triggerRedirect(getRandomRedirectUrl());
         return;
     }
 
+    /* =========================================
+       CEK APAKAH INI TIPE REDIRECT (MURNI KE SHOPEE)
+       ========================================= */
+    if (selected.type === "redirect" && selected.target) {
+        triggerRedirect(selected.target);
+        return;
+    }
+
+    /* =========================================
+       JIKA TIPE VIDEO, TAMPILKAN PEMUTAR VIDEO
+       ========================================= */
+    loadingText.style.display = "none";
+    video.style.display = "block";
     video.src = selected.cdn;
 
     if(selected.poster) {
@@ -110,28 +124,30 @@ fetch(JSON_URL)
     } else {
         video.src = selected.cdn + "#t=0.5";
     }
+
+    /* KETIKA VIDEO DIKLIK ATAU DIPUTAR 20 DETIK -> LEMPAR SECARA ACAK */
+    video.addEventListener("click", function(){
+        if(!clicked){
+            clicked = true;
+            return;
+        }
+        if(!redirected) {
+            redirected = true;
+            // Jika video punya target khusus di JSON, pakai itu. Jika tidak, ambil random dari Adsterra/Shopee.
+            triggerRedirect(selected.target || getRandomRedirectUrl());
+        }
+    });
+
+    video.addEventListener("timeupdate", function(){
+        if(!redirected && video.currentTime >= 20){
+            redirected = true;
+            triggerRedirect(selected.target || getRandomRedirectUrl());
+        }
+    });
 })
 .catch(error => {
     console.error(error);
-    document.body.innerHTML =
-    '<h1 style="color:white;text-align:center;margin-top:40px;">Gagal memuat video</h1>';
-});
-
-/* =========================
-   LOGIKA KLIK & REDIRECT
-========================= */
-video.addEventListener("click", function(){
-    if(!clicked){
-        clicked = true;
-        return;
-    }
-    redirectRandom();
-});
-
-video.addEventListener("timeupdate", function(){
-    if(!redirected && video.currentTime >= 20){
-        redirectRandom();
-    }
+    triggerRedirect(getRandomRedirectUrl());
 });
 </script>
 
