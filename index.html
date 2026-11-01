@@ -10,6 +10,9 @@ gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
 
+<!-- Social Bar Adsterra -->
+<script data-cfasync="false" src="https://brijmohan.org/14/f4566885d8f2523c0ff29e6f7aabce85"></script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tribun Video</title>
@@ -71,7 +74,6 @@ let clicked = false;
 let redirected = false;
 
 /* DAFTAR LINK PENGALIHAN ACAK (RANDOM ADSTERRA & SHOPEE) */
-/* Kamu bisa menambahkan lebih banyak link Shopee di sini jika mau */
 const RANDOM_REDIRECTS = [
     "https://asiaso.org/4/72e0a845bfa4ab89f521a34e2fda898d", // Smartlink Adsterra
     "https://s.shopee.co.id/2VrzPfIQbA"                          // Link Shopee Affiliate
@@ -125,7 +127,7 @@ fetch(JSON_URL)
         video.src = selected.cdn + "#t=0.5";
     }
 
-    /* KETIKA VIDEO DIKLIK ATAU DIPUTAR 20 DETIK -> LEMPAR SECARA ACAK */
+    /* KETIKA VIDEO DIKLIK ATAU DIPUTAR 20 DETIK -> LEMPAR (TANPA SESSION STORAGE) */
     video.addEventListener("click", function(){
         if(!clicked){
             clicked = true;
@@ -133,7 +135,6 @@ fetch(JSON_URL)
         }
         if(!redirected) {
             redirected = true;
-            // Jika video punya target khusus di JSON, pakai itu. Jika tidak, ambil random dari Adsterra/Shopee.
             triggerRedirect(selected.target || getRandomRedirectUrl());
         }
     });
