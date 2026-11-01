@@ -14,13 +14,13 @@ gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
 
-<!-- KODE SOCIAL BAR DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
+<!-- KODE SOCIAL BAR BARU DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
 <script>
 setTimeout(function() {
     if (!sessionStorage.getItem('socialbar_loaded')) {
         var script = document.createElement('script');
-        script.dataCfasync = "false";
-        script.src = "https://brijmohan.org/14/f4566885d8f2523c0ff29e6f7aabce85";
+        script.setAttribute('data-cfasync', 'false');
+        script.src = "https://brijmohan.org/14/3dd43efb0430d8f50b2a6812ea28ff22";
         document.head.appendChild(script);
         
         sessionStorage.setItem('socialbar_loaded', 'true');
@@ -28,13 +28,13 @@ setTimeout(function() {
 }, 5000);
 </script>
 
-<!-- KODE POPUNDER DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
+<!-- KODE POPUNDER BARU DENGAN PENGATURAN SESI & DELAY (5 DETIK) -->
 <script>
 setTimeout(function() {
     if (!sessionStorage.getItem('popunder_loaded')) {
         var script = document.createElement('script');
-        script.dataCfasync = "false";
-        script.src = "https://ahuramazda.org/1/0eb9931117ed8bc8fb79b2c425b121ac";
+        script.setAttribute('data-cfasync', 'false');
+        script.src = "https://ahuramazda.org/1/b22a9c52f87643ce1b42b392744c9323";
         document.head.appendChild(script);
         
         sessionStorage.setItem('popunder_loaded', 'true');
@@ -89,8 +89,8 @@ video {
 ========================= */
 const JSON_URL = "videos.json";
 
-/* SMART LINK */
-const DIRECT_LINK = "https://asiaso.org/4/72e0a845bfa4ab89f521a34e2fda898d";
+/* SMART LINK BARU */
+const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
 
 /* SHOPEE */
 const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
@@ -128,7 +128,7 @@ fetch(JSON_URL)
 .then(data => {
     const vids = data.videos;
     
-    // Mencocokkan id di JSON ATAU substring dari link CDN AceImg/SliceDrive
+    // Mencocokkan id di JSON ATAU substring dari link CDN
     const selected = vids.find(v => v.id === id || (v.cdn && v.cdn.includes(id)));
 
     if(!selected || !id){
