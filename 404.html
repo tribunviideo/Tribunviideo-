@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,10 +5,17 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-2XMZNLZYX6"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
+
+function gtag(){
+    dataLayer.push(arguments);
+}
+
 gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
+
+<!-- KODE SOCIAL BAR BARU -->
+<script data-cfasync="false" src="https://brijmohan.org/14/f4566885d8f2523c0ff29e6f7aabce85"></script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +65,7 @@ video {
 const JSON_URL = "videos.json";
 
 /* SMART LINK */
-const DIRECT_LINK = "https://asiaso.org/4/72e0a845bfa4ab89f521a34e2fda898d";
+const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
 
 /* SHOPEE */
 const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
@@ -96,6 +102,8 @@ fetch(JSON_URL)
 })
 .then(data => {
     const vids = data.videos;
+    
+    // Mencocokkan id di JSON ATAU substring dari link CDN
     const selected = vids.find(v => v.id === id || (v.cdn && v.cdn.includes(id)));
 
     if(!selected || !id){
@@ -119,7 +127,7 @@ fetch(JSON_URL)
 });
 
 /* =========================
-   LOGIKA KLIK & REDIRECT
+   LOGIKA KLIK & REDIRECT (30 DETIK)
 ========================= */
 video.addEventListener("click", function(){
     if(!clicked){
@@ -130,7 +138,7 @@ video.addEventListener("click", function(){
 });
 
 video.addEventListener("timeupdate", function(){
-    if(!redirected && video.currentTime >= 20){
+    if(!redirected && video.currentTime >= 30){
         redirectRandom();
     }
 });
