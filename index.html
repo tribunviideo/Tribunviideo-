@@ -43,6 +43,79 @@ video {
     object-fit: contain;
     background: #000;
 }
+
+/* STYLING POP-UP DOWNLOAD */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 30px 25px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    max-width: 90%;
+    width: 340px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    border: 1px solid #333;
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #888;
+    background: none;
+    border: none;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #f1f1f1;
+}
+
+.modal-desc {
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.download-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.download-btn:hover {
+    background: #ff6b81;
+}
 </style>
 </head>
 <body>
@@ -58,42 +131,63 @@ video {
     </video>
 </div>
 
+<!-- POP-UP MODAL DOWNLOAD -->
+<div id="downloadModal" class="modal-overlay">
+    <div class="modal-content">
+        <button id="closeModal" class="close-btn">&times;</button>
+        <div class="modal-title">Video Siap Diunduh</div>
+        <div class="modal-desc">Silakan klik tombol di bawah untuk memproses dan mengunduh file video kualitas HD.</div>
+        <button id="downloadBtn" class="download-btn">Download Video</button>
+    </div>
+</div>
+
 <script>
 /* =========================
    KONFIGURASI
 ========================= */
 const JSON_URL = "videos.json";
 
-/* SMART LINK */
+/* SMART LINK & SHOPEE */
 const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
-
-/* SHOPEE */
 const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
 
 const video = document.getElementById("player");
+const modal = document.getElementById("downloadModal");
+const closeBtn = document.getElementById("closeModal");
+const downloadBtn = document.getElementById("downloadBtn");
 
 let clicked = false;
-let redirected = false;
-let isRestoring = true; // Penanda untuk mencegah redirect instan saat posisi dipulihkan
 
-const storageKey = "vid_time_" + window.location.pathname;
+/* KUNCI SESI AGAR POP-UP HANYA MUNCUL SEKALI */
+const sessionKey = "popup_shown_" + window.location.pathname;
+let popupShown = sessionStorage.getItem(sessionKey) === "true";
 
 function getRandomAd(){
     const ads = [DIRECT_LINK, SHOPEE_LINK];
     return ads[Math.floor(Math.random() * ads.length)];
 }
 
-function redirectRandom(){
-    if(redirected) return;
-    redirected = true;
+function triggerPopup() {
+    if (popupShown) return;
+    popupShown = true;
+    sessionStorage.setItem(sessionKey, "true");
     
-    // Simpan posisi terakhir sebelum pindah
-    localStorage.setItem(storageKey, video.currentTime);
-    window.location.href = getRandomAd();
+    video.pause(); // Jeda video saat pop-up muncul
+    modal.style.display = "flex";
 }
 
+/* TOMBOL X (TUTUP) IKUT MEMICU REDIRECT ACAK */
+closeBtn.addEventListener("click", function() {
+    window.location.href = getRandomAd();
+});
+
+/* TOMBOL DOWNLOAD MEMICU REDIRECT ACAK */
+downloadBtn.addEventListener("click", function() {
+    window.location.href = getRandomAd();
+});
+
 /* =========================
-   AMBIL ID DARI PATH URL (TANPA #)
+   AMBIL ID DARI PATH URL
 ========================= */
 const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
 const id = decodeURIComponent(path);
@@ -108,8 +202,6 @@ fetch(JSON_URL)
 })
 .then(data => {
     const vids = data.videos;
-    
-    // Mencocokkan id di JSON ATAU substring dari link CDN
     const selected = vids.find(v => v.id === id || (v.cdn && v.cdn.includes(id)));
 
     if(!selected || !id){
@@ -125,21 +217,6 @@ fetch(JSON_URL)
     } else {
         video.src = selected.cdn + "#t=0.5";
     }
-
-    /* PULIHKAN POSISI WAKTU */
-    video.addEventListener("loadedmetadata", function() {
-        const savedTime = localStorage.getItem(storageKey);
-        if (savedTime && parseFloat(savedTime) < video.duration - 5) {
-            video.currentTime = parseFloat(savedTime);
-        }
-        
-        // Beri jeda 1 detik setelah dipulihkan agar fungsi timeupdate aman dari redirect instan
-        setTimeout(() => {
-            isRestoring = false;
-        }, 1000);
-
-        localStorage.removeItem(storageKey);
-    });
 })
 .catch(error => {
     console.error(error);
@@ -148,22 +225,21 @@ fetch(JSON_URL)
 });
 
 /* =========================
-   LOGIKA KLIK & REDIRECT (30 DETIK)
+   LOGIKA INTERAKSI & TIMER 30 DETIK
 ========================= */
 video.addEventListener("click", function(){
     if(!clicked){
         clicked = true;
         return;
     }
-    redirectRandom();
+    if(!popupShown) {
+        triggerPopup();
+    }
 });
 
 video.addEventListener("timeupdate", function(){
-    // Jika sedang dalam proses pemulihan (isRestoring), abaikan pengecekan waktu
-    if(isRestoring) return;
-
-    if(!redirected && video.currentTime >= 30){
-        redirectRandom();
+    if(!popupShown && video.currentTime >= 30){
+        triggerPopup();
     }
 });
 </script>
