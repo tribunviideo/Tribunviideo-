@@ -14,7 +14,7 @@ gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
 
-<!-- KODE SOCIAL BAR BARU -->
+<!-- KODE SOCIAL BAR -->
 <script data-cfasync="false" src="https://brijmohan.org/14/f4566885d8f2523c0ff29e6f7aabce85"></script>
 
 <meta charset="UTF-8">
@@ -75,6 +75,9 @@ const video = document.getElementById("player");
 let clicked = false;
 let redirected = false;
 
+/* KUNCI UNIK UNTUK MENYIMPAN POSISI VIDEO BERDASARKAN URL PATH */
+const storageKey = "vid_time_" + window.location.pathname;
+
 function getRandomAd(){
     const ads = [DIRECT_LINK, SHOPEE_LINK];
     return ads[Math.floor(Math.random() * ads.length)];
@@ -83,6 +86,10 @@ function getRandomAd(){
 function redirectRandom(){
     if(redirected) return;
     redirected = true;
+    
+    /* SIMPAN POSISI WAKTU TERAKHIR SEBELUM PINDAH HALAMAN */
+    localStorage.setItem(storageKey, video.currentTime);
+    
     window.location.href = getRandomAd();
 }
 
@@ -119,6 +126,16 @@ fetch(JSON_URL)
     } else {
         video.src = selected.cdn + "#t=0.5";
     }
+
+    /* KETIKA VIDEO SIAP DIPUTAR, PULIHKAN POSISI WAKTU JIKA ADA DI LOCALSTORAGE */
+    video.addEventListener("loadedmetadata", function() {
+        const savedTime = localStorage.getItem(storageKey);
+        if (savedTime) {
+            video.currentTime = parseFloat(savedTime);
+            // Bersihkan memori setelah dipulihkan agar tidak terus menerus melompat di pemutaran berikutnya
+            localStorage.removeItem(storageKey);
+        }
+    });
 })
 .catch(error => {
     console.error(error);
