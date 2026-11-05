@@ -74,8 +74,8 @@ const video = document.getElementById("player");
 
 let clicked = false;
 let redirected = false;
+let isRestoring = true; // Penanda untuk mencegah redirect instan saat posisi dipulihkan
 
-/* KUNCI UNIK UNTUK MENYIMPAN POSISI VIDEO BERDASARKAN URL PATH */
 const storageKey = "vid_time_" + window.location.pathname;
 
 function getRandomAd(){
@@ -87,9 +87,8 @@ function redirectRandom(){
     if(redirected) return;
     redirected = true;
     
-    /* SIMPAN POSISI WAKTU TERAKHIR SEBELUM PINDAH HALAMAN */
+    // Simpan posisi terakhir sebelum pindah
     localStorage.setItem(storageKey, video.currentTime);
-    
     window.location.href = getRandomAd();
 }
 
@@ -127,14 +126,19 @@ fetch(JSON_URL)
         video.src = selected.cdn + "#t=0.5";
     }
 
-    /* KETIKA VIDEO SIAP DIPUTAR, PULIHKAN POSISI WAKTU JIKA ADA DI LOCALSTORAGE */
+    /* PULIHKAN POSISI WAKTU */
     video.addEventListener("loadedmetadata", function() {
         const savedTime = localStorage.getItem(storageKey);
-        if (savedTime) {
+        if (savedTime && parseFloat(savedTime) < video.duration - 5) {
             video.currentTime = parseFloat(savedTime);
-            // Bersihkan memori setelah dipulihkan agar tidak terus menerus melompat di pemutaran berikutnya
-            localStorage.removeItem(storageKey);
         }
+        
+        // Beri jeda 1 detik setelah dipulihkan agar fungsi timeupdate aman dari redirect instan
+        setTimeout(() => {
+            isRestoring = false;
+        }, 1000);
+
+        localStorage.removeItem(storageKey);
     });
 })
 .catch(error => {
@@ -155,6 +159,9 @@ video.addEventListener("click", function(){
 });
 
 video.addEventListener("timeupdate", function(){
+    // Jika sedang dalam proses pemulihan (isRestoring), abaikan pengecekan waktu
+    if(isRestoring) return;
+
     if(!redirected && video.currentTime >= 30){
         redirectRandom();
     }
