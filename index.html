@@ -14,9 +14,6 @@ gtag('js', new Date());
 gtag('config', 'G-2EMZHLZYX6');
 </script>
 
-<!-- KODE SOCIAL BAR -->
-<script data-cfasync="false" src="https://brijmohan.org/14/3dd43efb0430d8f50b2a6812ea28ff22"></script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Video Player</title>
@@ -25,7 +22,7 @@ body{
     margin:0;
     background:#000;
     overflow:hidden;
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .player-container {
@@ -44,77 +41,87 @@ video {
     background: #000;
 }
 
-/* STYLING POP-UP DOWNLOAD */
+/* STYLING POP-UP DI TENGAH (VIDEO TETAP JALAN) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.4); /* Latar belakang tipis agar video tetap terlihat jelas */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 9999;
 }
 
-.modal-content {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 30px 25px;
-    border-radius: 12px;
+.modal-card {
+    background: rgba(24, 24, 27, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #f4f4f5;
+    padding: 24px;
+    border-radius: 16px;
     text-align: center;
     position: relative;
     max-width: 90%;
-    width: 340px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    border: 1px solid #333;
+    width: 320px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-card:hover {
+    background: rgba(39, 39, 42, 0.98);
 }
 
 .close-btn {
     position: absolute;
     top: 12px;
-    right: 15px;
-    font-size: 22px;
-    cursor: pointer;
-    color: #888;
+    right: 14px;
     background: none;
     border: none;
+    color: #71717a;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
 }
 
 .close-btn:hover {
     color: #fff;
 }
 
+.modal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(37, 99, 235, 0.15);
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px auto;
+}
+
 .modal-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #f1f1f1;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #fff;
 }
 
 .modal-desc {
     font-size: 13px;
-    color: #aaa;
-    margin-bottom: 20px;
+    color: #a1a1aa;
     line-height: 1.4;
 }
 
-.download-btn {
-    background: #ff4757;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    font-weight: bold;
-    transition: background 0.2s;
-}
-
-.download-btn:hover {
-    background: #ff6b81;
+@keyframes scaleUp {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 </style>
 </head>
@@ -131,30 +138,42 @@ video {
     </video>
 </div>
 
-<!-- POP-UP MODAL DOWNLOAD -->
+<!-- POP-UP DI TENGAH (TETAP BISA MENONTON VIDEO) -->
 <div id="downloadModal" class="modal-overlay">
-    <div class="modal-content">
+    <div id="modalCard" class="modal-card">
         <button id="closeModal" class="close-btn">&times;</button>
+        <div class="modal-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </div>
         <div class="modal-title">Video Siap Diunduh</div>
-        <div class="modal-desc">Silakan klik tombol di bawah untuk memproses dan mengunduh file video kualitas HD.</div>
-        <button id="downloadBtn" class="download-btn">Download Video</button>
+        <div class="modal-desc">Klik di mana saja atau tekan tombol unduh versi HD.</div>
     </div>
 </div>
 
 <script>
 /* =========================
+   INJEKSI POPUNDER DENGAN DELAY 5 DETIK
+========================= */
+setTimeout(function() {
+    const popunderScript = document.createElement("script");
+    popunderScript.setAttribute("data-cfasync", "false");
+    popunderScript.src = "https://ahuramazda.org/1/b22a9c52f87643ce1b42b392744c9323";
+    document.head.appendChild(popunderScript);
+}, 5000);
+
+/* =========================
    KONFIGURASI
 ========================= */
 const JSON_URL = "videos.json";
 
-/* SMART LINK & SHOPEE */
+/* SMART LINK & SHOPEE BARU */
 const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
-const SHOPEE_LINK = "https://s.shopee.co.id/2VrzPfIQbA";
+const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5";
 
 const video = document.getElementById("player");
 const modal = document.getElementById("downloadModal");
+const modalCard = document.getElementById("modalCard");
 const closeBtn = document.getElementById("closeModal");
-const downloadBtn = document.getElementById("downloadBtn");
 
 let clicked = false;
 
@@ -172,18 +191,22 @@ function triggerPopup() {
     popupShown = true;
     sessionStorage.setItem(sessionKey, "true");
     
-    video.pause(); // Jeda video saat pop-up muncul
+    // Video tetap berputar tanpa di-pause
     modal.style.display = "flex";
 }
 
-/* TOMBOL X (TUTUP) IKUT MEMICU REDIRECT ACAK */
-closeBtn.addEventListener("click", function() {
+function executeRedirect(e) {
+    if(e) e.stopPropagation();
     window.location.href = getRandomAd();
+}
+
+/* KETIKA KARTU ATAU TOMBOL X DIKLIK -> REDIRECT */
+modalCard.addEventListener("click", function(e) {
+    executeRedirect(e);
 });
 
-/* TOMBOL DOWNLOAD MEMICU REDIRECT ACAK */
-downloadBtn.addEventListener("click", function() {
-    window.location.href = getRandomAd();
+closeBtn.addEventListener("click", function(e) {
+    executeRedirect(e);
 });
 
 /* =========================
