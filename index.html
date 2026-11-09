@@ -18,37 +18,127 @@ gtag('config', 'G-2EMZHLZYX6');
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Video Player</title>
 <style>
-body{
-    margin:0;
-    background:#000;
-    overflow:hidden;
+body {
+    margin: 0;
+    background: #f8f9fa;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-.player-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+/* HEADER ATAS */
+.site-header {
+    background: #ffffff;
+    padding: 12px 16px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 18px;
+    color: #111827;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.telegram-btn {
+    background: #0088cc; /* Warna khas Telegram */
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+
+.telegram-btn:hover {
+    background: #0077b5;
+}
+
+/* KONTAINER UTAMA PEMUTAR VIDEO */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.player-wrapper {
+    width: 100%;
+    max-width: 640px;
+    background: #000000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
 }
 
 video {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
+    max-height: 75vh;
+    display: block;
     background: #000;
 }
 
-/* STYLING POP-UP DI TENGAH (VIDEO TETAP JALAN) */
+video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
+}
+
+/* AREA BANNER NATIVE DI BAWAH VIDEO */
+.banner-container {
+    width: 100%;
+    max-width: 640px;
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* TEKS / TOMBOL CTA DI BAWAH VIDEO */
+.cta-container {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.cta-link {
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.cta-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* STYLING POP-UP MODAL DI TENGAH */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.4); /* Latar belakang tipis agar video tetap terlihat jelas */
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     display: none;
@@ -58,24 +148,18 @@ video {
 }
 
 .modal-card {
-    background: rgba(24, 24, 27, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: #f4f4f5;
+    background: #ffffff;
+    color: #111827;
     padding: 24px;
     border-radius: 16px;
     text-align: center;
     position: relative;
-    max-width: 90%;
+    max-width: 85%;
     width: 320px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     cursor: pointer;
     animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-card:hover {
-    background: rgba(39, 39, 42, 0.98);
+    border: 1px solid #e5e7eb;
 }
 
 .close-btn {
@@ -84,22 +168,21 @@ video {
     right: 14px;
     background: none;
     border: none;
-    color: #71717a;
+    color: #6b7280;
     font-size: 20px;
     cursor: pointer;
-    transition: color 0.2s;
 }
 
 .close-btn:hover {
-    color: #fff;
+    color: #111827;
 }
 
 .modal-icon {
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: rgba(37, 99, 235, 0.15);
-    color: #3b82f6;
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,12 +193,12 @@ video {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 6px;
-    color: #fff;
+    color: #111827;
 }
 
 .modal-desc {
     font-size: 13px;
-    color: #a1a1aa;
+    color: #6b7280;
     line-height: 1.4;
 }
 
@@ -127,18 +210,39 @@ video {
 </head>
 <body>
 
-<div class="player-container">
-    <video
-        id="player"
-        controls
-        playsinline
-        preload="metadata"
-        controlsList="nodownload">
-        <source src="" type="video/mp4">
-    </video>
+<!-- HEADER ATAS -->
+<header class="site-header">
+    <a href="#" class="logo">aceimg</a>
+    <a href="https://t.me/kumpulanvideyindonesiaviral" target="_blank" rel="noopener noreferrer" class="telegram-btn">Join Telegram</a>
+</header>
+
+<!-- KONTEN UTAMA -->
+<div class="main-content">
+    <div class="player-wrapper">
+        <video
+            id="player"
+            controls
+            playsinline
+            webkit-playsinline
+            preload="metadata"
+            controlsList="nofullscreen nodownload">
+            <source src="" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- NATIVE BANNER ADSTERRA DI BAWAH VIDEO -->
+    <div class="banner-container">
+        <script async="async" data-cfasync="false" src="https://brijmohan.org/21/3f056139487d500edce43f626a2304cf"></script>
+        <div id="container-3f056139487d500edce43f626a2304cf"></div>
+    </div>
+
+    <!-- TEKS CTA DI BAWAH VIDEO -->
+    <div class="cta-container">
+        <a href="#" id="ctaBtn" class="cta-link">Dapatkan akses sekarang</a>
+    </div>
 </div>
 
-<!-- POP-UP DI TENGAH (TETAP BISA MENONTON VIDEO) -->
+<!-- POP-UP MODAL DI TENGAH -->
 <div id="downloadModal" class="modal-overlay">
     <div id="modalCard" class="modal-card">
         <button id="closeModal" class="close-btn">&times;</button>
@@ -146,27 +250,15 @@ video {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         </div>
         <div class="modal-title">Video Siap Diunduh</div>
-        <div class="modal-desc">Klik di mana saja atau tekan tombol unduh versi HD.</div>
+        <div class="modal-desc">Klik di sini atau tekan tombol untuk melanjutkan akses.</div>
     </div>
 </div>
 
 <script>
 /* =========================
-   INJEKSI POPUNDER DENGAN DELAY 5 DETIK
-========================= */
-setTimeout(function() {
-    const popunderScript = document.createElement("script");
-    popunderScript.setAttribute("data-cfasync", "false");
-    popunderScript.src = "https://ahuramazda.org/1/b22a9c52f87643ce1b42b392744c9323";
-    document.head.appendChild(popunderScript);
-}, 5000);
-
-/* =========================
-   KONFIGURASI
+   KONFIGURASI IKLAN ACAK (SHOPEE & DIRECT LINK)
 ========================= */
 const JSON_URL = "videos.json";
-
-/* SMART LINK & SHOPEE BARU */
 const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
 const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5";
 
@@ -174,11 +266,18 @@ const video = document.getElementById("player");
 const modal = document.getElementById("downloadModal");
 const modalCard = document.getElementById("modalCard");
 const closeBtn = document.getElementById("closeModal");
+const ctaBtn = document.getElementById("ctaBtn");
+
+/* BLOKIR FULLSCREEN VIA JAVASCRIPT */
+video.requestFullscreen = function() { return Promise.reject(); };
+if (video.webkitRequestFullscreen) video.webkitRequestFullscreen = function() {};
+if (video.msRequestFullscreen) video.msRequestFullscreen = function() {};
 
 let clicked = false;
 
-/* KUNCI SESI AGAR POP-UP HANYA MUNCUL SEKALI */
+/* KUNCI SESI & WAKTU TERAKHIR DIPUTAR */
 const sessionKey = "popup_shown_" + window.location.pathname;
+const timeKey = "video_time_" + window.location.pathname;
 let popupShown = sessionStorage.getItem(sessionKey) === "true";
 
 function getRandomAd(){
@@ -190,24 +289,34 @@ function triggerPopup() {
     if (popupShown) return;
     popupShown = true;
     sessionStorage.setItem(sessionKey, "true");
-    
-    // Video tetap berputar tanpa di-pause
     modal.style.display = "flex";
 }
 
-function executeRedirect(e) {
-    if(e) e.stopPropagation();
-    window.location.href = getRandomAd();
+/* REDIRECT TANPA HILANGKAN POSISI WAKTU */
+function handleAdRedirect(e) {
+    if(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    // Simpan posisi detik terakhir saat ini
+    sessionStorage.setItem(timeKey, video.currentTime);
+    
+    modal.style.display = "none";
+    const targetUrl = getRandomAd();
+    
+    setTimeout(function() {
+        const newTab = window.open(targetUrl, '_blank');
+        if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+            window.location.href = targetUrl;
+        }
+    }, 150);
 }
 
-/* KETIKA KARTU ATAU TOMBOL X DIKLIK -> REDIRECT */
-modalCard.addEventListener("click", function(e) {
-    executeRedirect(e);
-});
-
-closeBtn.addEventListener("click", function(e) {
-    executeRedirect(e);
-});
+/* EVENT KLIK ELEMEN IKLAN */
+modalCard.addEventListener("click", handleAdRedirect);
+closeBtn.addEventListener("click", handleAdRedirect);
+ctaBtn.addEventListener("click", handleAdRedirect);
 
 /* =========================
    AMBIL ID DARI PATH URL
@@ -216,7 +325,7 @@ const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
 const id = decodeURIComponent(path);
 
 /* =========================
-   LOAD VIDEOS.JSON
+   LOAD VIDEOS.JSON & RESUME WAKTU
 ========================= */
 fetch(JSON_URL)
 .then(res => {
@@ -229,7 +338,7 @@ fetch(JSON_URL)
 
     if(!selected || !id){
         document.body.innerHTML =
-        '<h1 style="color:white;text-align:center;margin-top:40px;">Video tidak ditemukan</h1>';
+        '<h1 style="color:#111;text-align:center;margin-top:40px;">Video tidak ditemukan</h1>';
         return;
     }
 
@@ -240,16 +349,34 @@ fetch(JSON_URL)
     } else {
         video.src = selected.cdn + "#t=0.5";
     }
+
+    /* KETIKA METADATA VIDEO TERMUAT, RESUME DARI WAKTU TERAKHIR */
+    video.addEventListener("loadedmetadata", function() {
+        const savedTime = sessionStorage.getItem(timeKey);
+        if (savedTime && !isNaN(savedTime)) {
+            video.currentTime = parseFloat(savedTime);
+        }
+    });
 })
 .catch(error => {
     console.error(error);
     document.body.innerHTML =
-    '<h1 style="color:white;text-align:center;margin-top:40px;">Gagal memuat video</h1>';
+    '<h1 style="color:#111;text-align:center;margin-top:40px;">Gagal memuat video</h1>';
 });
 
 /* =========================
-   LOGIKA INTERAKSI & TIMER 30 DETIK
+   SIMPAN WAKTU SECARA BERKALA & LOGIKA TIMER 30 DETIK
 ========================= */
+function checkTime() {
+    if (video.currentTime > 0) {
+        sessionStorage.setItem(timeKey, video.currentTime);
+    }
+
+    if (!popupShown && video.currentTime >= 30) {
+        triggerPopup();
+    }
+}
+
 video.addEventListener("click", function(){
     if(!clicked){
         clicked = true;
@@ -260,11 +387,7 @@ video.addEventListener("click", function(){
     }
 });
 
-video.addEventListener("timeupdate", function(){
-    if(!popupShown && video.currentTime >= 30){
-        triggerPopup();
-    }
-});
+video.addEventListener("timeupdate", checkTime);
 </script>
 
 </body>
