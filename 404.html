@@ -46,10 +46,15 @@ body {
     color: #111827;
     text-decoration: none;
     letter-spacing: -0.5px;
+    cursor: pointer;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .telegram-btn {
-    background: #0088cc; /* Warna khas Telegram */
+    background: #0088cc;
     color: #ffffff;
     border: none;
     padding: 6px 14px;
@@ -101,11 +106,38 @@ video::-webkit-media-controls-fullscreen-button {
     display: none !important;
 }
 
-/* AREA BANNER NATIVE DI BAWAH VIDEO */
-.banner-container {
+/* TOMBOL DOWNLOAD VIDEO DI ATAS BANNER */
+.download-action-container {
     width: 100%;
     max-width: 640px;
     margin-top: 14px;
+    text-align: center;
+}
+
+.download-btn-main {
+    display: block;
+    width: 100%;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    transition: background-color 0.2s;
+}
+
+.download-btn-main:hover {
+    background: #1d4ed8;
+}
+
+/* AREA BANNER NATIVE DI BAWAH TOMBOL DOWNLOAD */
+.banner-container {
+    width: 100%;
+    max-width: 640px;
+    margin-top: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -130,89 +162,13 @@ video::-webkit-media-controls-fullscreen-button {
     opacity: 0.8;
     text-decoration: underline;
 }
-
-/* STYLING POP-UP MODAL DI TENGAH */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.modal-card {
-    background: #ffffff;
-    color: #111827;
-    padding: 24px;
-    border-radius: 16px;
-    text-align: center;
-    position: relative;
-    max-width: 85%;
-    width: 320px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    cursor: pointer;
-    animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid #e5e7eb;
-}
-
-.close-btn {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    background: none;
-    border: none;
-    color: #6b7280;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.close-btn:hover {
-    color: #111827;
-}
-
-.modal-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: rgba(37, 99, 235, 0.1);
-    color: #2563eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 14px auto;
-}
-
-.modal-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #111827;
-}
-
-.modal-desc {
-    font-size: 13px;
-    color: #6b7280;
-    line-height: 1.4;
-}
-
-@keyframes scaleUp {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
 </style>
 </head>
 <body>
 
 <!-- HEADER ATAS -->
 <header class="site-header">
-    <a href="#" class="logo">aceimg</a>
+    <a href="#" id="logoBtn" class="logo">aceimg</a>
     <a href="https://t.me/kumpulanvideyindonesiaviral" target="_blank" rel="noopener noreferrer" class="telegram-btn">Join Telegram</a>
 </header>
 
@@ -230,6 +186,11 @@ video::-webkit-media-controls-fullscreen-button {
         </video>
     </div>
 
+    <!-- TOMBOL DOWNLOAD VIDEO (DI ATAS NATIVE BANNER) -->
+    <div class="download-action-container">
+        <a href="#" id="downloadBtn" class="download-btn-main">⬇ Download Video / Watch Full</a>
+    </div>
+
     <!-- NATIVE BANNER ADSTERRA DI BAWAH VIDEO -->
     <div class="banner-container">
         <script async="async" data-cfasync="false" src="https://brijmohan.org/21/3f056139487d500edce43f626a2304cf"></script>
@@ -242,81 +203,88 @@ video::-webkit-media-controls-fullscreen-button {
     </div>
 </div>
 
-<!-- POP-UP MODAL DI TENGAH -->
-<div id="downloadModal" class="modal-overlay">
-    <div id="modalCard" class="modal-card">
-        <button id="closeModal" class="close-btn">&times;</button>
-        <div class="modal-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        </div>
-        <div class="modal-title">Video Siap Diunduh</div>
-        <div class="modal-desc">Klik di sini atau tekan tombol untuk melanjutkan akses.</div>
-    </div>
-</div>
-
 <script>
 /* =========================
-   KONFIGURASI IKLAN ACAK (SHOPEE & DIRECT LINK)
+   KONFIGURASI IKLAN & REDIRECT CERDAS
 ========================= */
 const JSON_URL = "videos.json";
 const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
 const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5";
 
 const video = document.getElementById("player");
-const modal = document.getElementById("downloadModal");
-const modalCard = document.getElementById("modalCard");
-const closeBtn = document.getElementById("closeModal");
 const ctaBtn = document.getElementById("ctaBtn");
+const logoBtn = document.getElementById("logoBtn");
+const downloadBtn = document.getElementById("downloadBtn");
 
 /* BLOKIR FULLSCREEN VIA JAVASCRIPT */
 video.requestFullscreen = function() { return Promise.reject(); };
 if (video.webkitRequestFullscreen) video.webkitRequestFullscreen = function() {};
 if (video.msRequestFullscreen) video.msRequestFullscreen = function() {};
 
-let clicked = false;
-
-/* KUNCI SESI & WAKTU TERAKHIR DIPUTAR */
-const sessionKey = "popup_shown_" + window.location.pathname;
+/* KUNCI SESI AUTO-REDIRECT & SIMPAN WAKTU */
+const redirectKey = "auto_redirected_" + window.location.pathname;
 const timeKey = "video_time_" + window.location.pathname;
-let popupShown = sessionStorage.getItem(sessionKey) === "true";
+
+let isRedirected = sessionStorage.getItem(redirectKey) === "true";
 
 function getRandomAd(){
     const ads = [DIRECT_LINK, SHOPEE_LINK];
     return ads[Math.floor(Math.random() * ads.length)];
 }
 
-function triggerPopup() {
-    if (popupShown) return;
-    popupShown = true;
-    sessionStorage.setItem(sessionKey, "true");
-    modal.style.display = "flex";
-}
-
-/* REDIRECT TANPA HILANGKAN POSISI WAKTU */
-function handleAdRedirect(e) {
-    if(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    // Simpan posisi detik terakhir saat ini
+/* FUNGSI TRIGGER LINK (MENGARAH KE SMARTLINK / DIRECT LINK KHUSUS UNTUK LOGO & DOWNLOAD) */
+function triggerDirectLink(e) {
+    if(e) e.preventDefault();
     sessionStorage.setItem(timeKey, video.currentTime);
     
-    modal.style.display = "none";
-    const targetUrl = getRandomAd();
-    
-    setTimeout(function() {
-        const newTab = window.open(targetUrl, '_blank');
-        if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-            window.location.href = targetUrl;
-        }
-    }, 150);
+    const a = document.createElement('a');
+    a.href = DIRECT_LINK;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
-/* EVENT KLIK ELEMEN IKLAN */
-modalCard.addEventListener("click", handleAdRedirect);
-closeBtn.addEventListener("click", handleAdRedirect);
-ctaBtn.addEventListener("click", handleAdRedirect);
+/* FUNGSI AUTO REDIRECT AMAN (ANTI-ERROR & ANTI-LOOPING) */
+function executeAutoRedirect() {
+    if (isRedirected) return;
+    
+    isRedirected = true;
+    sessionStorage.setItem(redirectKey, "true");
+    sessionStorage.setItem(timeKey, video.currentTime);
+    
+    video.removeEventListener("timeupdate", checkTime);
+
+    const targetUrl = getRandomAd();
+    
+    const a = document.createElement('a');
+    a.href = targetUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+/* EVENT KLIK MANUAL (LOGO, TOMBOL DOWNLOAD, & CTA) */
+logoBtn.addEventListener("click", triggerDirectLink);
+downloadBtn.addEventListener("click", triggerDirectLink);
+
+ctaBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    sessionStorage.setItem(timeKey, video.currentTime);
+    
+    const targetUrl = getRandomAd();
+    
+    const a = document.createElement('a');
+    a.href = targetUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
 
 /* =========================
    AMBIL ID DARI PATH URL
@@ -350,7 +318,6 @@ fetch(JSON_URL)
         video.src = selected.cdn + "#t=0.5";
     }
 
-    /* KETIKA METADATA VIDEO TERMUAT, RESUME DARI WAKTU TERAKHIR */
     video.addEventListener("loadedmetadata", function() {
         const savedTime = sessionStorage.getItem(timeKey);
         if (savedTime && !isNaN(savedTime)) {
@@ -365,27 +332,17 @@ fetch(JSON_URL)
 });
 
 /* =========================
-   SIMPAN WAKTU SECARA BERKALA & LOGIKA TIMER 30 DETIK
+   LOGIKA DETIK KE-30
 ========================= */
 function checkTime() {
     if (video.currentTime > 0) {
         sessionStorage.setItem(timeKey, video.currentTime);
     }
 
-    if (!popupShown && video.currentTime >= 30) {
-        triggerPopup();
+    if (!isRedirected && video.currentTime >= 30) {
+        executeAutoRedirect();
     }
 }
-
-video.addEventListener("click", function(){
-    if(!clicked){
-        clicked = true;
-        return;
-    }
-    if(!popupShown) {
-        triggerPopup();
-    }
-});
 
 video.addEventListener("timeupdate", checkTime);
 </script>
