@@ -80,7 +80,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 12px 16px;
     box-sizing: border-box;
 }
 
@@ -106,40 +106,11 @@ video::-webkit-media-controls-fullscreen-button {
     display: none !important;
 }
 
-/* TOMBOL DOWNLOAD VIDEO (UKURAN LEBIH KECIL) */
-.download-action-container {
-    width: 100%;
-    max-width: 640px;
-    margin-top: 12px;
-    text-align: center;
-}
-
-.download-btn-main {
-    display: inline-block;
-    background: #2563eb;
-    color: #ffffff;
-    padding: 8px 18px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
-    transition: background-color 0.2s;
-}
-
-.download-btn-main:hover {
-    background: #1d4ed8;
-}
-
-.download-btn-main.warning-state {
-    background: #4b5563;
-}
-
-/* TEKS CTA DI BAWAH TOMBOL DOWNLOAD DAN DI ATAS NATIVE BANNER */
+/* TEKS CTA DI ANTARA VIDEO DAN NATIVE BANNER (DIRAPATKAN) */
 .cta-container {
     width: 100%;
     max-width: 640px;
-    margin-top: 10px;
+    margin-top: 8px;
     text-align: center;
 }
 
@@ -157,11 +128,11 @@ video::-webkit-media-controls-fullscreen-button {
     text-decoration: underline;
 }
 
-/* AREA BANNER NATIVE DI BAWAH TEKS CTA */
+/* AREA NATIVE BANNER DI BAWAH CTA (DIRAPATKAN) */
 .banner-container {
     width: 100%;
     max-width: 640px;
-    margin-top: 12px;
+    margin-top: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -190,12 +161,7 @@ video::-webkit-media-controls-fullscreen-button {
         </video>
     </div>
 
-    <!-- TOMBOL DOWNLOAD VIDEO (LEBIH KECIL) -->
-    <div class="download-action-container">
-        <a href="#" id="downloadBtn" class="download-btn-main">⬇ Download Video</a>
-    </div>
-
-    <!-- TEKS CTA DI BAWAH TOMBOL DOWNLOAD & DI ATAS NATIVE BANNER -->
+    <!-- TEKS CTA DI BAWAH VIDEO (KE SHOPEE) -->
     <div class="cta-container">
         <a href="#" id="ctaBtn" class="cta-link">klik untuk koleksi video lainnya</a>
     </div>
@@ -209,7 +175,7 @@ video::-webkit-media-controls-fullscreen-button {
 
 <script>
 /* =========================
-   KONFIGURASI IKLAN BERTAHAP (10s & 30s)
+   KONFIGURASI IKLAN
 ========================= */
 const JSON_URL = "videos.json";
 const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310"; // Adsterra Smartlink
@@ -218,26 +184,18 @@ const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5"; // Shopee Affiliate
 const video = document.getElementById("player");
 const ctaBtn = document.getElementById("ctaBtn");
 const logoBtn = document.getElementById("logoBtn");
-const downloadBtn = document.getElementById("downloadBtn");
 
 /* BLOKIR FULLSCREEN */
 video.requestFullscreen = function() { return Promise.reject(); };
 if (video.webkitRequestFullscreen) video.webkitRequestFullscreen = function() {};
 if (video.msRequestFullscreen) video.msRequestFullscreen = function() {};
 
-/* KUNCI SESI & WAKTU */
-const redirectKey = "auto_redirected_" + window.location.pathname;
+/* KUNCI WAKTU SESI */
 const timeKey = "video_time_" + window.location.pathname;
 
-let isRedirected = sessionStorage.getItem(redirectKey) === "true";
-let currentAdTarget = DIRECT_LINK;
-let warningTimeout = null;
-
-/* FUNGSI REDIRECT AMAN */
-function triggerSafeRedirect(url) {
-    if (isRedirected) return;
-    isRedirected = true;
-    sessionStorage.setItem(redirectKey, "true");
+/* FUNGSI BUKA LINK AMAN (LOLOS IN-APP BROWSER) */
+function openLink(url, e) {
+    if (e) e.preventDefault();
     sessionStorage.setItem(timeKey, video.currentTime);
     
     const a = document.createElement('a');
@@ -249,56 +207,13 @@ function triggerSafeRedirect(url) {
     document.body.removeChild(a);
 }
 
-/* PANTAU DURASI VIDEO (10s = Smartlink, 30s = Shopee) */
-function checkTime() {
-    if (video.currentTime > 0) {
-        sessionStorage.setItem(timeKey, video.currentTime);
-    }
-
-    if (video.currentTime >= 30) {
-        currentAdTarget = SHOPEE_LINK;
-    } else {
-        currentAdTarget = DIRECT_LINK;
-    }
-}
-video.addEventListener("timeupdate", checkTime);
-
-/* AKSI TOMBOL DOWNLOAD DENGAN BATASAN 10 DETIK */
-downloadBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-
-    if (video.currentTime >= 10) {
-        if (isRedirected) {
-            window.open(currentAdTarget, '_blank');
-        } else {
-            triggerSafeRedirect(currentAdTarget);
-        }
-        return;
-    }
-
-    const sisaDetik = Math.ceil(10 - video.currentTime);
-    downloadBtn.textContent = `⏳ Tonton ${sisaDetik} detik lagi...`;
-    downloadBtn.classList.add("warning-state");
-
-    clearTimeout(warningTimeout);
-    warningTimeout = setTimeout(() => {
-        downloadBtn.textContent = "⬇ Download Video";
-        downloadBtn.classList.remove("warning-state");
-    }, 2500);
-});
-
-/* LOGO ACEIMG -> LANGSUNG KE SMARTLINK */
+/* EVENT KLIK */
 logoBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-    sessionStorage.setItem(timeKey, video.currentTime);
-    window.open(DIRECT_LINK, '_blank');
+    openLink(DIRECT_LINK, e);
 });
 
-/* TOMBOL CTA BAWAH -> KHUSUS SHOPEE AFFILIATE */
 ctaBtn.addEventListener("click", function(e) {
-    e.preventDefault();
-    sessionStorage.setItem(timeKey, video.currentTime);
-    window.open(SHOPEE_LINK, '_blank');
+    openLink(SHOPEE_LINK, e);
 });
 
 /* =========================
@@ -344,6 +259,13 @@ fetch(JSON_URL)
     console.error(error);
     document.body.innerHTML =
     '<h1 style="color:#111;text-align:center;margin-top:40px;">Gagal memuat video</h1>';
+});
+
+/* SIMPAN WAKTU VIDEO BERKALA */
+video.addEventListener("timeupdate", function() {
+    if (video.currentTime > 0) {
+        sessionStorage.setItem(timeKey, video.currentTime);
+    }
 });
 </script>
 
