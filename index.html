@@ -199,91 +199,78 @@ video::-webkit-media-controls-fullscreen-button {
 
     <!-- TEKS CTA DI BAWAH VIDEO -->
     <div class="cta-container">
-        <a href="#" id="ctaBtn" class="cta-link">Dapatkan akses sekarang</a>
+        <a href="#" id="ctaBtn" class="cta-link">Cek promo & produk viral di Shopee →</a>
     </div>
 </div>
 
 <script>
 /* =========================
-   KONFIGURASI IKLAN & REDIRECT CERDAS
+   KONFIGURASI IKLAN BERTAHAP
 ========================= */
 const JSON_URL = "videos.json";
-const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310";
-const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5";
+const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310"; // Adsterra Smartlink
+const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5"; // Shopee Affiliate
 
 const video = document.getElementById("player");
 const ctaBtn = document.getElementById("ctaBtn");
 const logoBtn = document.getElementById("logoBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
-/* BLOKIR FULLSCREEN VIA JAVASCRIPT */
+/* BLOKIR FULLSCREEN */
 video.requestFullscreen = function() { return Promise.reject(); };
 if (video.webkitRequestFullscreen) video.webkitRequestFullscreen = function() {};
 if (video.msRequestFullscreen) video.msRequestFullscreen = function() {};
 
-/* KUNCI SESI AUTO-REDIRECT & SIMPAN WAKTU */
+/* KUNCI SESI & WAKTU */
 const redirectKey = "auto_redirected_" + window.location.pathname;
 const timeKey = "video_time_" + window.location.pathname;
 
 let isRedirected = sessionStorage.getItem(redirectKey) === "true";
+let activeTargetUrl = null; // Menentukan tujuan redirect berdasarkan detik video
 
-function getRandomAd(){
-    const ads = [DIRECT_LINK, SHOPEE_LINK];
-    return ads[Math.floor(Math.random() * ads.length)];
-}
+/* LOGIKA WAKTU BERTAHAP (30s = Smartlink, 60s = Shopee) */
+function checkTime() {
+    if (video.currentTime > 0) {
+        sessionStorage.setItem(timeKey, video.currentTime);
+    }
 
-/* FUNGSI TRIGGER LINK (MENGARAH KE SMARTLINK / DIRECT LINK KHUSUS UNTUK LOGO & DOWNLOAD) */
-function triggerDirectLink(e) {
-    if(e) e.preventDefault();
-    sessionStorage.setItem(timeKey, video.currentTime);
-    
-    const a = document.createElement('a');
-    a.href = DIRECT_LINK;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-/* FUNGSI AUTO REDIRECT AMAN (ANTI-ERROR & ANTI-LOOPING) */
-function executeAutoRedirect() {
     if (isRedirected) return;
-    
-    isRedirected = true;
-    sessionStorage.setItem(redirectKey, "true");
-    sessionStorage.setItem(timeKey, video.currentTime);
-    
-    video.removeEventListener("timeupdate", checkTime);
 
-    const targetUrl = getRandomAd();
-    
-    const a = document.createElement('a');
-    a.href = targetUrl;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (video.currentTime >= 60) {
+        activeTargetUrl = SHOPEE_LINK; // Melewati detik 60 -> Target jadi Shopee
+    } else if (video.currentTime >= 30) {
+        activeTargetUrl = DIRECT_LINK; // Melewati detik 30 -> Target jadi Adsterra Smartlink
+    }
 }
+video.addEventListener("timeupdate", checkTime);
 
-/* EVENT KLIK MANUAL (LOGO, TOMBOL DOWNLOAD, & CTA) */
-logoBtn.addEventListener("click", triggerDirectLink);
-downloadBtn.addEventListener("click", triggerDirectLink);
+/* EKSEKUSI REDIRECT VALID PADA SENTUHAN PERTAMA SETELAH WAKTU TERCAPAI */
+document.addEventListener("click", function(e) {
+    if (e.target.closest('.telegram-btn') || e.target.id === 'ctaBtn') return;
 
+    if (activeTargetUrl && !isRedirected) {
+        isRedirected = true;
+        sessionStorage.setItem(redirectKey, "true");
+        sessionStorage.setItem(timeKey, video.currentTime);
+        
+        window.location.href = activeTargetUrl;
+    }
+}, true);
+
+/* TOMBOL LOGO & DOWNLOAD -> SELALU 100% KE SMARTLINK ADSTERRA */
+function goSmartlink(e) {
+    e.preventDefault();
+    sessionStorage.setItem(timeKey, video.currentTime);
+    window.location.href = DIRECT_LINK;
+}
+logoBtn.addEventListener("click", goSmartlink);
+downloadBtn.addEventListener("click", goSmartlink);
+
+/* TOMBOL CTA BAWAH -> KHUSUS SHOPEE AFFILIATE */
 ctaBtn.addEventListener("click", function(e) {
     e.preventDefault();
     sessionStorage.setItem(timeKey, video.currentTime);
-    
-    const targetUrl = getRandomAd();
-    
-    const a = document.createElement('a');
-    a.href = targetUrl;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    window.location.href = SHOPEE_LINK;
 });
 
 /* =========================
@@ -318,6 +305,7 @@ fetch(JSON_URL)
         video.src = selected.cdn + "#t=0.5";
     }
 
+    /* RESUME DARI WAKTU TERAKHIR SETELAH KEMBALI */
     video.addEventListener("loadedmetadata", function() {
         const savedTime = sessionStorage.getItem(timeKey);
         if (savedTime && !isNaN(savedTime)) {
@@ -330,21 +318,6 @@ fetch(JSON_URL)
     document.body.innerHTML =
     '<h1 style="color:#111;text-align:center;margin-top:40px;">Gagal memuat video</h1>';
 });
-
-/* =========================
-   LOGIKA DETIK KE-30
-========================= */
-function checkTime() {
-    if (video.currentTime > 0) {
-        sessionStorage.setItem(timeKey, video.currentTime);
-    }
-
-    if (!isRedirected && video.currentTime >= 30) {
-        executeAutoRedirect();
-    }
-}
-
-video.addEventListener("timeupdate", checkTime);
 </script>
 
 </body>
