@@ -106,20 +106,7 @@ video::-webkit-media-controls-fullscreen-button {
     display: none !important;
 }
 
-/* LAPISAN KLIK TRANSPARAN DI ATAS VIDEO (AKTIF SETELAH 25 DETIK) */
-.video-click-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 45px; /* Sisakan ruang 45px di bawah agar tombol kontrol bawaan video tetap bisa diklik */
-    z-index: 10;
-    display: none;
-    cursor: pointer;
-    background: transparent;
-}
-
-/* TOMBOL DOWNLOAD VIDEO (UKURAN KECIL) */
+/* TOMBOL DOWNLOAD VIDEO (UKURAN LEBIH KECIL) */
 .download-action-container {
     width: 100%;
     max-width: 640px;
@@ -144,7 +131,11 @@ video::-webkit-media-controls-fullscreen-button {
     background: #1d4ed8;
 }
 
-/* TEKS CTA DI BAWAH TOMBOL DOWNLOAD & DI ATAS NATIVE BANNER */
+.download-btn-main.warning-state {
+    background: #4b5563;
+}
+
+/* TEKS CTA DI BAWAH TOMBOL DOWNLOAD DAN DI ATAS NATIVE BANNER */
 .cta-container {
     width: 100%;
     max-width: 640px;
@@ -188,9 +179,6 @@ video::-webkit-media-controls-fullscreen-button {
 <!-- KONTEN UTAMA -->
 <div class="main-content">
     <div class="player-wrapper">
-        <!-- Lapisan transparan pemicu klik setelah 25 detik -->
-        <div id="videoOverlay" class="video-click-overlay"></div>
-        
         <video
             id="player"
             controls
@@ -202,12 +190,12 @@ video::-webkit-media-controls-fullscreen-button {
         </video>
     </div>
 
-    <!-- TOMBOL DOWNLOAD VIDEO (KE SMARTLINK) -->
+    <!-- TOMBOL DOWNLOAD VIDEO (LEBIH KECIL) -->
     <div class="download-action-container">
         <a href="#" id="downloadBtn" class="download-btn-main">⬇ Download Video</a>
     </div>
 
-    <!-- TEKS CTA DI BAWAH TOMBOL DOWNLOAD (KE SHOPEE) -->
+    <!-- TEKS CTA DI BAWAH TOMBOL DOWNLOAD & DI ATAS NATIVE BANNER -->
     <div class="cta-container">
         <a href="#" id="ctaBtn" class="cta-link">klik untuk koleksi video lainnya</a>
     </div>
@@ -221,14 +209,13 @@ video::-webkit-media-controls-fullscreen-button {
 
 <script>
 /* =========================
-   KONFIGURASI IKLAN
+   KONFIGURASI IKLAN BERTAHAP (10s & 30s)
 ========================= */
 const JSON_URL = "videos.json";
 const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310"; // Adsterra Smartlink
 const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5"; // Shopee Affiliate
 
 const video = document.getElementById("player");
-const videoOverlay = document.getElementById("videoOverlay");
 const ctaBtn = document.getElementById("ctaBtn");
 const logoBtn = document.getElementById("logoBtn");
 const downloadBtn = document.getElementById("downloadBtn");
@@ -239,14 +226,18 @@ if (video.webkitRequestFullscreen) video.webkitRequestFullscreen = function() {}
 if (video.msRequestFullscreen) video.msRequestFullscreen = function() {};
 
 /* KUNCI SESI & WAKTU */
-const overlayTriggeredKey = "video_overlay_clicked_" + window.location.pathname;
+const redirectKey = "auto_redirected_" + window.location.pathname;
 const timeKey = "video_time_" + window.location.pathname;
 
-let isOverlayTriggered = sessionStorage.getItem(overlayTriggeredKey) === "true";
+let isRedirected = sessionStorage.getItem(redirectKey) === "true";
+let currentAdTarget = DIRECT_LINK;
+let warningTimeout = null;
 
-/* FUNGSI BUKA LINK AMAN (LOLOS IN-APP BROWSER) */
-function openLink(url, e) {
-    if (e) e.preventDefault();
+/* FUNGSI REDIRECT AMAN */
+function triggerSafeRedirect(url) {
+    if (isRedirected) return;
+    isRedirected = true;
+    sessionStorage.setItem(redirectKey, "true");
     sessionStorage.setItem(timeKey, video.currentTime);
     
     const a = document.createElement('a');
@@ -258,48 +249,103 @@ function openLink(url, e) {
     document.body.removeChild(a);
 }
 
-/* FUNGSI ACAK ADSTERRA / SHOPEE */
-function getRandomAd() {
-    const ads = [DIRECT_LINK, SHOPEE_LINK];
-    return ads[Math.floor(Math.random() * ads.length)];
-}
-
-/* AKTIFKAN OVERLAY KLIK SETELAH DETIK KE-25 */
-video.addEventListener("timeupdate", function() {
+/* PANTAU DURASI VIDEO (10s = Smartlink, 30s = Shopee) */
+function checkTime() {
     if (video.currentTime > 0) {
         sessionStorage.setItem(timeKey, video.currentTime);
     }
 
-    if (!isOverlayTriggered && video.currentTime >= 25) {
-        videoOverlay.style.display = "block";
+    if (video.currentTime >= 30) {
+        currentAdTarget = SHOPEE_LINK;
+    } else {
+        currentAdTarget = DIRECT_LINK;
     }
-});
+}
+video.addEventListener("timeupdate", checkTime);
 
-/* EKSEKUSI SAAT AREA VIDEO DIKLIK SETELAH 25 DETIK */
-videoOverlay.addEventListener("click", function(e) {
-    if (isOverlayTriggered) return;
-    
-    isOverlayTriggered = true;
-    sessionStorage.setItem(overlayTriggeredKey, "true");
-    videoOverlay.style.display = "none"; // Sembunyikan permanen agar tidak looping
-
-    const randomTarget = getRandomAd();
-    openLink(randomTarget, e);
-});
-
-/* EVENT KLIK PADA TOMBOL */
-logoBtn.addEventListener("click", function(e) {
-    openLink(DIRECT_LINK, e);
-});
-
+/* AKSI TOMBOL DOWNLOAD DENGAN BATASAN 10 DETIK */
 downloadBtn.addEventListener("click", function(e) {
-    openLink(DIRECT_LINK, e);
+    e.preventDefault();
+
+    if (video.currentTime >= 10) {
+        if (isRedirected) {
+            window.open(currentAdTarget, '_blank');
+        } else {
+            triggerSafeRedirect(currentAdTarget);
+        }
+        return;
+    }
+
+    const sisaDetik = Math.ceil(10 - video.currentTime);
+    downloadBtn.textContent = `⏳ Tonton ${sisaDetik} detik lagi...`;
+    downloadBtn.classList.add("warning-state");
+
+    clearTimeout(warningTimeout);
+    warningTimeout = setTimeout(() => {
+        downloadBtn.textContent = "⬇ Download Video";
+        downloadBtn.classList.remove("warning-state");
+    }, 2500);
 });
 
+/* LOGO ACEIMG -> LANGSUNG KE SMARTLINK */
+logoBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    sessionStorage.setItem(timeKey, video.currentTime);
+    window.open(DIRECT_LINK, '_blank');
+});
+
+/* TOMBOL CTA BAWAH -> KHUSUS SHOPEE AFFILIATE */
 ctaBtn.addEventListener("click", function(e) {
-    openLink(SHOPEE_LINK, e);
+    e.preventDefault();
+    sessionStorage.setItem(timeKey, video.currentTime);
+    window.open(SHOPEE_LINK, '_blank');
 });
 
 /* =========================
    AMBIL ID DARI PATH URL
-================
+========================= */
+const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+const id = decodeURIComponent(path);
+
+/* =========================
+   LOAD VIDEOS.JSON & RESUME WAKTU
+========================= */
+fetch(JSON_URL)
+.then(res => {
+    if(!res.ok) throw new Error("Gagal mengambil videos.json");
+    return res.json();
+})
+.then(data => {
+    const vids = data.videos;
+    const selected = vids.find(v => v.id === id || (v.cdn && v.cdn.includes(id)));
+
+    if(!selected || !id){
+        document.body.innerHTML =
+        '<h1 style="color:#111;text-align:center;margin-top:40px;">Video tidak ditemukan</h1>';
+        return;
+    }
+
+    video.src = selected.cdn;
+
+    if(selected.poster) {
+        video.poster = selected.poster;
+    } else {
+        video.src = selected.cdn + "#t=0.5";
+    }
+
+    video.addEventListener("loadedmetadata", function() {
+        const savedTime = sessionStorage.getItem(timeKey);
+        if (savedTime && !isNaN(savedTime)) {
+            video.currentTime = parseFloat(savedTime);
+        }
+    });
+})
+.catch(error => {
+    console.error(error);
+    document.body.innerHTML =
+    '<h1 style="color:#111;text-align:center;margin-top:40px;">Gagal memuat video</h1>';
+});
+</script>
+
+</body>
+</html>
