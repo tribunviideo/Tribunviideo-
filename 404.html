@@ -107,7 +107,7 @@ video::-webkit-media-controls-fullscreen-button {
     display: none !important;
 }
 
-/* TEKS CTA DI BAWAH VIDEO (SEBELUM BANNER) */
+/* TEKS CTA DI BAWAH VIDEO (KE SHOPEE) */
 .cta-top-container {
     width: 100%;
     max-width: 480px;
@@ -154,36 +154,14 @@ video::-webkit-media-controls-fullscreen-button {
     background: #1d4ed8;
 }
 
-/* AREA NATIVE BANNER DI ATAS CTA BAWAH */
+/* AREA NATIVE BANNER DI BAWAH TOMBOL DOWNLOAD */
 .banner-container {
     width: 100%;
     max-width: 480px;
-    margin-top: 8px;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-/* TEKS CTA DI BAWAH NATIVE BANNER */
-.cta-bottom-container {
-    width: 100%;
-    max-width: 480px;
-    margin-top: 8px;
-    text-align: center;
-}
-
-.cta-bottom-link {
-    color: #2563eb;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-.cta-bottom-link:hover {
-    opacity: 0.8;
-    text-decoration: underline;
 }
 </style>
 </head>
@@ -221,13 +199,8 @@ video::-webkit-media-controls-fullscreen-button {
 
     <!-- NATIVE BANNER ADSTERRA -->
     <div class="banner-container">
-        <script async="async" data-cfasync="false" src="https://brijmohan.org/21/3f056139487d500edce43f626a2304cf"></script>
-        <div id="container-3f056139487d500edce43f626a2304cf"></div>
-    </div>
-
-    <!-- TEKS CTA DI BAWAH NATIVE BANNER (KE SHOPEE) -->
-    <div class="cta-bottom-container">
-        <a href="#" id="ctaBottomBtn" class="cta-bottom-link">klik untuk koleksi video lainnya</a>
+        <script async="async" data-cfasync="false" src="https://biomanos.org/21/e170b26b99b8f7f08a5ae2cce8ef0829"></script>
+        <div id="container-e170b26b99b8f7f08a5ae2cce8ef0829"></div>
     </div>
 </div>
 
@@ -236,12 +209,11 @@ video::-webkit-media-controls-fullscreen-button {
    KONFIGURASI IKLAN
 ========================= */
 const JSON_URL = "videos.json";
-const DIRECT_LINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310"; // Adsterra Smartlink
+const DIRECT_LINK = "https://apiguinee.org/4/08c815375df57aaafadf0cfe54ba5db4"; // Adsterra Smartlink Baru
 const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5"; // Shopee Affiliate
 
 const video = document.getElementById("player");
 const ctaTopBtn = document.getElementById("ctaTopBtn");
-const ctaBottomBtn = document.getElementById("ctaBottomBtn");
 const logoBtn = document.getElementById("logoBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 
@@ -273,15 +245,11 @@ logoBtn.addEventListener("click", function(e) {
 });
 
 ctaTopBtn.addEventListener("click", function(e) {
-    openLink(SHOPEE_LINK, e); // Teks CTA Atas -> Shopee
+    openLink(SHOPEE_LINK, e); // Teks CTA -> Shopee
 });
 
 downloadBtn.addEventListener("click", function(e) {
     openLink(SHOPEE_LINK, e); // Tombol Download -> Shopee
-});
-
-ctaBottomBtn.addEventListener("click", function(e) {
-    openLink(SHOPEE_LINK, e); // Teks CTA Bawah -> Shopee
 });
 
 /* =========================
