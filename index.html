@@ -107,7 +107,7 @@ video::-webkit-media-controls-fullscreen-button {
     display: none !important;
 }
 
-/* TEKS CTA DI BAWAH VIDEO (KE SHOPEE) */
+/* TEKS CTA DI BAWAH VIDEO (KE SMARTLINK) */
 .cta-top-container {
     width: 100%;
     max-width: 480px;
@@ -129,7 +129,7 @@ video::-webkit-media-controls-fullscreen-button {
     text-decoration: underline;
 }
 
-/* TOMBOL DOWNLOAD DI ATAS BANNER (KE SHOPEE) */
+/* TOMBOL DOWNLOAD DI ATAS BANNER (KE SMARTLINK) */
 .download-action-container {
     width: 100%;
     max-width: 480px;
@@ -187,12 +187,12 @@ video::-webkit-media-controls-fullscreen-button {
         </video>
     </div>
 
-    <!-- TEKS CTA DI BAWAH VIDEO (KE SHOPEE) -->
+    <!-- TEKS CTA DI BAWAH VIDEO (KE SMARTLINK) -->
     <div class="cta-top-container">
         <a href="#" id="ctaTopBtn" class="cta-top-link">klik untuk koleksi video lainnya</a>
     </div>
 
-    <!-- TOMBOL DOWNLOAD DI ATAS BANNER (KE SHOPEE) -->
+    <!-- TOMBOL DOWNLOAD DI ATAS BANNER (KE SMARTLINK) -->
     <div class="download-action-container">
         <a href="#" id="downloadBtn" class="download-btn-main">⬇ Download Video</a>
     </div>
@@ -209,8 +209,8 @@ video::-webkit-media-controls-fullscreen-button {
    KONFIGURASI IKLAN
 ========================= */
 const JSON_URL = "videos.json";
-const DIRECT_LINK = "https://apiguinee.org/4/08c815375df57aaafadf0cfe54ba5db4"; // Adsterra Smartlink Baru
-const SHOPEE_LINK = "https://s.shopee.co.id/50aShM6iR5"; // Shopee Affiliate
+const DIRECT_LINK = "https://apiguinee.org/4/08c815375df57aaafadf0cfe54ba5db4"; // Adsterra Smartlink Logo
+const CTA_SMARTLINK = "https://asiaso.org/4/dd0fd223f44b88381ac7e49fca0d0310"; // Smartlink Baru (CTA & Download)
 
 const video = document.getElementById("player");
 const ctaTopBtn = document.getElementById("ctaTopBtn");
@@ -241,15 +241,15 @@ function openLink(url, e) {
 
 /* EVENT KLIK */
 logoBtn.addEventListener("click", function(e) {
-    openLink(DIRECT_LINK, e); // Logo -> Smartlink
+    openLink(DIRECT_LINK, e); // Logo -> Smartlink Utama
 });
 
 ctaTopBtn.addEventListener("click", function(e) {
-    openLink(SHOPEE_LINK, e); // Teks CTA -> Shopee
+    openLink(CTA_SMARTLINK, e); // Teks CTA -> Smartlink Baru
 });
 
 downloadBtn.addEventListener("click", function(e) {
-    openLink(SHOPEE_LINK, e); // Tombol Download -> Shopee
+    openLink(CTA_SMARTLINK, e); // Tombol Download -> Smartlink Baru
 });
 
 /* =========================
