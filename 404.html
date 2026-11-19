@@ -107,11 +107,21 @@ video::-webkit-media-controls-fullscreen-button {
     display: none !important;
 }
 
-/* TEKS CTA DI BAWAH VIDEO (KE SMARTLINK) */
+/* AREA BANNER DI BAWAH VIDEO */
+.banner-container {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* TEKS CTA DI BAWAH BANNER (KE SMARTLINK) */
 .cta-top-container {
     width: 100%;
     max-width: 480px;
-    margin-top: 8px;
+    margin-top: 10px;
     text-align: center;
 }
 
@@ -129,7 +139,7 @@ video::-webkit-media-controls-fullscreen-button {
     text-decoration: underline;
 }
 
-/* TOMBOL DOWNLOAD DI ATAS BANNER (KE SMARTLINK) */
+/* TOMBOL DOWNLOAD DI BAWAH CTA (KE SMARTLINK) */
 .download-action-container {
     width: 100%;
     max-width: 480px;
@@ -152,16 +162,6 @@ video::-webkit-media-controls-fullscreen-button {
 
 .download-btn-main:hover {
     background: #1d4ed8;
-}
-
-/* AREA BANNER DI BAWAH TOMBOL DOWNLOAD */
-.banner-container {
-    width: 100%;
-    max-width: 480px;
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 </style>
 </head>
@@ -187,17 +187,7 @@ video::-webkit-media-controls-fullscreen-button {
         </video>
     </div>
 
-    <!-- TEKS CTA DI BAWAH VIDEO (KE SMARTLINK) -->
-    <div class="cta-top-container">
-        <a href="#" id="ctaTopBtn" class="cta-top-link">klik untuk koleksi video lainnya</a>
-    </div>
-
-    <!-- TOMBOL DOWNLOAD DI ATAS BANNER (KE SMARTLINK) -->
-    <div class="download-action-container">
-        <a href="#" id="downloadBtn" class="download-btn-main">⬇ Download Video</a>
-    </div>
-
-    <!-- BANNER 320x50 -->
+    <!-- BANNER 320x50 DI BAWAH VIDEO -->
     <div class="banner-container">
         <script>
           atOptions = {
@@ -209,6 +199,16 @@ video::-webkit-media-controls-fullscreen-button {
           };
         </script>
         <script src="https://biomanos.org/22/d5e59677429daa859cedf2100701df3b"></script>
+    </div>
+
+    <!-- TEKS CTA DI BAWAH BANNER (KE SMARTLINK) -->
+    <div class="cta-top-container">
+        <a href="#" id="ctaTopBtn" class="cta-top-link">klik untuk koleksi video lainnya</a>
+    </div>
+
+    <!-- TOMBOL DOWNLOAD DI BAWAH CTA (KE SMARTLINK) -->
+    <div class="download-action-container">
+        <a href="#" id="downloadBtn" class="download-btn-main">⬇ Download Video</a>
     </div>
 </div>
 
